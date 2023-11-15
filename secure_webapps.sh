@@ -14,7 +14,7 @@ APPS=""$CONFIG_DIR"/apps.json"
 EXTENSIONS="https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
 
 reset() {
-    echo "Seguro que quieres restear todos los contenedores (type YES): "
+    echo "This will reset all containers (type YES): "
     read OPT
     if [ "$OPT" = "YES" ]
     then
