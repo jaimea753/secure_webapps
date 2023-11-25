@@ -12,6 +12,7 @@ APPS="$CONFIG_DIR/apps.json"
 ! [ -e "$APPS" ] && printf "[]" > "$APPS"
 
 
+# Deletes all app containers
 reset() {
     printf "This will reset all containers (type YES): "
     read -r OPT
@@ -22,6 +23,7 @@ reset() {
     fi
 }
 
+# Add a new container
 add() {
     while true
     do
@@ -51,6 +53,7 @@ add() {
     echo "$NEW" > "$APPS"
     rm -rf "$DATA_DIR"/"$APP_NAME"
     mkdir "$DATA_DIR"/"$APP_NAME"
+    # Default extensions, modify as necessary
     set "https://chromewebstore.google.com/detail/decentraleyes/ldpochfccmkkmhdbclfhpagapcfdljkj" \
         "https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
     for x in $@
@@ -59,6 +62,7 @@ add() {
     done
 }
 
+# Deletes a container
 del() {
     APP_NAME="$(jq -r '.[].name' "$APPS" | $DMENU_APP)"
     [ "$APP_NAME" = "" ] && exit
@@ -67,6 +71,7 @@ del() {
     rm -rf "$DATA_DIR"/"$APP_NAME"
 }
 
+# Run the container
 run() {
     SEL="$(jq -r '.[].name' "$APPS" | $DMENU_APP)"
     [ "$SEL" = "" ] && exit
@@ -76,12 +81,22 @@ run() {
     [ "$MODE" = "browser" ] && firejail $SECURITY_OPTIONS --private="$DATA_DIR"/"$SEL" chromium "$URL"
 }
 
+# Modify container settings after creation
+config() {
+    SEL="$(jq -r '.[].name' "$APPS" | $DMENU_APP)"
+    [ "$SEL" = "" ] && exit
+    firejail $SECURITY_OPTIONS --private="$DATA_DIR"/"$SEL" chromium
+}
+
 if [ "$1" = "add" ]
 then
     add
 elif [ "$1" = "run" ]
 then
     run
+elif [ "$1" = "config" ]
+then
+    config
 elif [ "$1" = "del" ]
 then
     del
@@ -89,6 +104,6 @@ elif [ "$1" = "reset" ]
 then
     reset
 else
-    printf "secure_webapps [add,run,del,reset]\n"
+    printf "secure_webapps [add,run,config,del,reset]\n"
 fi
 
