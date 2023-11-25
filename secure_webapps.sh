@@ -11,7 +11,6 @@ APPS="$CONFIG_DIR/apps.json"
 ! [ -d "$DATA_DIR" ] && mkdir -p "$DATA_DIR"
 ! [ -e "$APPS" ] && printf "[]" > "$APPS"
 
-EXTENSIONS="https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
 
 reset() {
     printf "This will reset all containers (type YES): "
@@ -52,9 +51,11 @@ add() {
     echo "$NEW" > "$APPS"
     rm -rf "$DATA_DIR"/"$APP_NAME"
     mkdir "$DATA_DIR"/"$APP_NAME"
-    for x in $EXTENSIONS
+    set "https://chromewebstore.google.com/detail/decentraleyes/ldpochfccmkkmhdbclfhpagapcfdljkj" \
+        "https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
+    for x in $@
     do
-        firejail $SECURITY_OPTIONS --private="$DATA_DIR"/"$APP_NAME" chromium "$x"
+        firejail $SECURITY_OPTIONS --private="$DATA_DIR"/"$APP_NAME" chromium "$x" &
     done
 }
 
