@@ -2,7 +2,7 @@
 
 CONFIG_DIR="$HOME/.config/secure_webapps"
 DATA_DIR="$HOME/.local/share/secure_webapps"
-DMENU_APP=dmenu
+DMENU_APP="dmenu -i"
 SECURITY_OPTIONS="--apparmor" # --seccomp does not seem to work
 
 APPS="$CONFIG_DIR/apps.json"
